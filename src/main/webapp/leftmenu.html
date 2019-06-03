@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="GB18030">
+<head>
+    <meta charset="GB18030">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .tree li {
+            list-style-type: none;
+            cursor:pointer;
+        }
+        .tree-closed {
+            height : 40px;
+        }
+        .tree-expanded {
+            height : auto;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <div class="tree" id="dataUl">
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="jquery/jquery-2.1.1.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="script/docs.min.js"></script>
+<script type="text/javascript">
+    var headHtml = "";
+    var trHtml = "";
+    var endHtml = "";
+    var liHtml="";
+    var underHtml = ";"
+    var mb = "控制面板".toString();
+    function getMenuInfoByUserId() {
+        $.ajax({
+            type: 'POST',
+            url: "showMenuInfoById",
+            contextType:"application/json",
+            success: function(data) {
+                var dataUl = $("#dataUl")
+
+                headHtml = "<ul style=\"padding-left:0px;\" class=\"list-group\" id=\"dataUl\">" +
+                    "<li class=\"list-group-item tree-closed\" >" +
+                    "<a href=\"main.html\"><i class=\"glyphicon glyphicon-dashboard\"></i>"+mb+"</a>" +
+                    "</li>"
+
+                underHtml = "</ul>"
+                //迭代一级菜单
+                $(data).each(function (index,item) {
+
+                    //迭代二级菜单
+                    var list = item.children;
+                    liHtml = "";
+                    $(list).each(function (index2,item2) {
+                        liHtml += "<li style=\"height:30px;\">"+
+                            "<a href="+item2.url+"><i class=\"glyphicon glyphicon-user\"></i> "+item2.name+" </a>"+
+                            "</li>";
+
+                    });
+
+                    endHtml = "<li class=\"list-group-item tree-closed\">" +
+                        "<a href=\"param.html\"><i class=\"glyphicon glyphicon-list-alt\"></i>参数管理</a>"+
+                        "</li>";
+
+                    trHtml +=
+                        "<li class=\"list-group-item\">"+
+                        "<span><i class=\"glyphicon glyphicon glyphicon-tasks\"></i> "+ item.name +" <span class=\"badge\" style=\"float:right\">"+item.children.length+"</span></span>"+
+                        "<ul style=\"margin-top:10px;\">"+
+                        liHtml +
+                        "</ul>"+
+                        "</li>";
+
+                    // console.log(trHtml);
+                    // dataUl.append(trHtml);
+                });
+
+                dataUl.append(headHtml+trHtml+endHtml+underHtml)
+                $(function () {
+                    $(".list-group-item").click(function(){
+                        // jquery对象的回调方法中的this关键字为DOM对象
+                        // $(DOM) ==> JQuery
+                        if ( $(this).find("ul") ) { // 3 li
+                            $(this).toggleClass("tree-closed");
+                            if ( $(this).hasClass("tree-closed") ) {
+                                $("ul", this).hide("fast");
+                            } else {
+                                $("ul", this).show("fast");
+                            }
+                        }
+                    });
+                });
+
+            },
+            error:function (data) {
+                console.error(data)
+            },
+            dataType: "json"
+        });
+    }
+    getMenuInfoByUserId();
+
+</script>
+</body>
+</html>

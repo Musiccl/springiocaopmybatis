@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="GB18030">
+  <head>
+    <meta charset="GB18030">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/doc.min.css">
+	<style>
+	.tree li {
+        list-style-type: none;
+		cursor:pointer;
+	}
+	</style>
+  </head>
+
+  <body>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<ol class="breadcrumb">
+				  <li><a href="#">首页</a></li>
+				  <li><a href="#">数据列表</a></li>
+				  <li class="active">新增</li>
+				</ol>
+			<div class="panel panel-default">
+              <div class="panel-heading">表单数据<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
+			  <div class="panel-body">
+				<form role="form">
+				  <div class="form-group">
+					<label for="username">商品标题</label>
+					<input type="text" class="form-control" id="goodsTitle" placeholder="请输入商品标题">
+				  </div>
+				  <div class="form-group">
+					<label for="password">商品名</label>
+					<input type="password" class="form-control" id="goodsName" placeholder="请输入商品名">
+				  </div>
+				  <div class="form-group">
+					<label for="regEmail">基础价格</label>
+					<input type="email" class="form-control" id="basePrice" placeholder="请输入基础价格">
+				  </div>
+					<div class="form-group">
+						<label for="mobile">价格</label>
+						<input type="text" class="form-control" id="price" placeholder="请输入价格">
+					</div>
+					<div class="form-group">
+						<label for="mobile">成本价</label>
+						<input type="text" class="form-control" id="costPrice" placeholder="请输入成本价">
+					</div>
+					<div class="form-group">
+						<label for="mobile">库存数量</label>
+						<input type="text" class="form-control" id="stockNum" placeholder="请输入库存数量">
+					</div>
+					<div class="form-group">
+						<label for="mobile">商品描述</label>
+						<input type="text" class="form-control" id="goodsDesc" placeholder="请输入商品描述">
+					</div>
+					<div class="form-group">
+						<label for="mobile">goodsHot</label>
+						<input type="text" class="form-control" id="goodsHot" placeholder="请输入goodsHot">
+					</div>
+					<div class="form-group">
+						<select id="status">
+							<option value="TOP">
+								上架
+							</option>
+							<option value="DOWN">
+								下架
+							</option>
+							<option value="DBL">
+								删除
+							</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<select id="goodsType">
+							<option value="SELF">
+								自营
+							</option>
+							<option value="JD">
+								京东
+							</option>
+							<option value="OVERSEAS">
+								海外购
+							</option>
+						</select>
+					</div>
+				  <button type="button" class="btn btn-success" onclick="AddGoodsInfo()"><i class="glyphicon glyphicon-plus"></i> 新增</button>
+				  <button type="button" class="btn btn-danger"><i class="glyphicon glyphicon-refresh"></i> 重置</button>
+				</form>
+			  </div>
+			</div>
+        </div>
+      </div>
+    </div>
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			<h4 class="modal-title" id="myModalLabel">帮助</h4>
+		  </div>
+		  <div class="modal-body">
+			<div class="bs-callout bs-callout-info">
+				<h4>测试标题1</h4>
+				<p>测试内容1，测试内容1，测试内容1，测试内容1，测试内容1，测试内容1</p>
+			  </div>
+			<div class="bs-callout bs-callout-info">
+				<h4>测试标题2</h4>
+				<p>测试内容2，测试内容2，测试内容2，测试内容2，测试内容2，测试内容2</p>
+			  </div>
+		  </div>
+		  <!--
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-primary">Save changes</button>
+		  </div>
+		  -->
+		</div>
+	  </div>
+	</div>
+    <script src="jquery/jquery-2.1.1.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+	<script src="script/docs.min.js"></script>
+        <script type="text/javascript">
+            $(function () {
+			    $(".list-group-item").click(function(){
+				    if ( $(this).find("ul") ) {
+						$(this).toggleClass("tree-closed");
+						if ( $(this).hasClass("tree-closed") ) {
+							$("ul", this).hide("fast");
+						} else {
+							$("ul", this).show("fast");
+						}
+					}
+				});
+            });
+
+			function AddGoodsInfo() {
+                $.ajax({
+                    type: 'POST',
+                    url: "/insertGoodsInfo",
+                    contentType:"application/json",
+                    data: JSON.stringify({
+                        "goodsTitle":$("#goodsTitle").val(),
+                        "goodsName":$("#goodsName").val(),
+                        "basePrice":$("#basePrice").val(),
+                        "price":$("#price").val(),
+                        "costPrice":$("#costPrice").val(),
+                        "stockNum":$("#stockNum").val(),
+                        "goodsHot":$("#goodsHot").val(),
+                        "status":$("#status").val(),
+                        "goodsType":$("#goodsType").val(),
+                    }),
+                    success: function(data) {
+                        console.log(data)
+                        window.location.href = "user.html";
+                    },
+                    error:function (data) {
+                        console.error(data)
+                        alert("添加失败");
+                    },
+                    dataType: "json"
+                });
+            }
+        </script>
+  </body>
+</html>

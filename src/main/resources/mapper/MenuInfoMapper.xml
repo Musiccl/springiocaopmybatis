@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzh.mapper.MenuInfoMapper">
+
+    <!--int id;-->
+    <!--int pid;-->
+    <!--int seqno;-->
+    <!--String name;-->
+    <!--String url;-->
+    <!--String icon;-->
+    <!--boolean open = true;-->
+    <!--boolean checked;-->
+
+    <resultMap id="MenuInfoMapper" type="com.dzh.dto.MenuInfoDto">
+        <id column="menuid" property="id"></id>
+        <result column="parentid" property="pid"></result>
+        <result column="menuname" property="name"></result>
+        <result column="menu_url" property="url"></result>
+        <result column="menuicon" property="icon"></result>
+        <collection property="children" ofType="com.dzh.dto.MenuInfoDto">
+            <id column="c_id" property="id"></id>
+            <result column="c_pid" property="pid"></result>
+            <result column="c_name" property="name"></result>
+            <result column="c_url" property="url"></result>
+            <result column="c_icon" property="icon"></result>
+            <result column="checked" property="checked"></result>
+        </collection>
+    </resultMap>
+
+    <select id="showMenuInfo" resultMap="MenuInfoMapper">
+        SELECT tb1.*,ISNULL(r.MENUID) checked
+        FROM (
+        SELECT m1.*,m2.MENUICON c_icon,m2.MENUID c_id,m2.MENUNAME c_name,m2.MENU_URL c_url,m2.PARENTID c_pid
+        FROM menuinfo m1,menuinfo m2
+        WHERE m1.MENUID = m2.PARENTID)
+        tb1
+        LEFT JOIN
+        rolemenu r
+        ON tb1.c_id = r.MENUID
+    </select>
+
+    <select id="showMenuInfoByRoleId" resultMap="MenuInfoMapper" parameterType="int">
+        SELECT tb1.*,!ISNULL(r.MENUID) checked
+        FROM (
+        SELECT m1.*,m2.MENUICON c_icon,m2.MENUID c_id,m2.MENUNAME c_name,m2.MENU_URL c_url,m2.PARENTID c_pid
+        FROM menuinfo m1,menuinfo m2
+        WHERE m1.MENUID = m2.PARENTID)
+        tb1
+        LEFT JOIN
+        rolemenu r
+        ON tb1.c_id = r.MENUID AND roleid=#{roleId}
+    </select>
+
+    <select id="showMenuInfoByUserId" resultMap="MenuInfoMapper" parameterType="int">
+        select m1.*,m2.MENUICON c_icon,m2.MENUID c_id,m2.MENUNAME c_name,m2.MENU_URL c_url,m2.PARENTID c_pid from menuinfo m1,menuinfo m2 where m2.MENUID in(
+        select MENUID from (select ur.* from userinfo u,user_role ur,roleinfo r
+        where u.USERID = ur.USERID and ur.ROLEID = r.ROLEID and u.USERID = #{userId})
+        tb1 LEFT JOIN rolemenu rm on tb1.roleid = rm.ROLEID GROUP BY MENUID) and m1.MENUID = m2.PARENTID
+    </select>
+
+
+    <!--P删除权限信息-->
+    <delete id="pDelAssignPermission" parameterType="int">
+        delete from rolemenu where roleid = #{roleId}
+    </delete>
+
+    <!--P添加权限信息-->
+    <delete id="pUpdateAssignPermission" parameterType="com.dzh.dto.AssignPermissionDto">
+        insert into rolemenu(roleid,menuid) values
+        <foreach collection="menuIdList" item="menuIds" separator=",">
+            (${roleId},${menuIds})
+        </foreach>
+    </delete>
+
+</mapper>

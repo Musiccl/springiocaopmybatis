@@ -1,0 +1,58 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head>
+    <title>
+        thytest
+    </title>
+</head>
+    <body>
+        <span th:text="${val}">
+                如果你看到这句话，说明thymeleaf没有生效/或者取值失败
+        </span>
+
+        <span th:text="${val1}" th:id="${idVal}" id="233">
+        如果你看到这句话，说明thymeleaf没有生效/或者取值失败
+    </span>
+        <p th:utext="${utextVal}">
+
+        </p>
+        留坑
+        <div th:object="${session.objVal.userName}"></div>
+        <br/>
+        <input type="text" th:value="${objVal.userName}"/>
+
+
+        <div th:with="isEven=${number}%2==0" th:text="${isEven}"></div>
+
+        <div th:if="${money} lt '10000'">
+            贫农
+        </div>
+        <div th:if="${money} gt '1000000'">
+            百万富翁不算啥
+        </div>
+        <div th:if="${money} ge '100000000'">
+            土豪
+        </div>
+
+        <div th:switch="${role}">
+            <p th:case="'superadmin'">超管</p>
+            <p th:case="'admin'">管理员</p>
+            <p th:case="'user'">用户</p>
+        </div>
+
+        <table>
+            <tr>
+                <td>
+                    名字
+                </td>
+                <td>
+                    密码
+                </td>
+            </tr>
+
+            <tr th:each="user:${userList}">
+                <td th:text="${user.userName}"></td>
+                <td th:text="${user.password}"></td>
+            </tr>
+        </table>
+    </body>
+</html>

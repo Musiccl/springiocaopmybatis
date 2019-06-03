@@ -1,0 +1,4 @@
+2019-05-28 11:27:55,714 INFO [com.dzh.MyTest] - slf4j for info
+2019-05-28 11:27:55,714 ERROR [com.dzh.MyTest] - slf4j for error
+2019-05-28 11:27:55,714 WARN [com.dzh.MyTest] - slf4j for warn
+2019-05-28 11:27:55,730 INFO [com.dzh.MyTest] - slf4j message is : Hello SLF4J

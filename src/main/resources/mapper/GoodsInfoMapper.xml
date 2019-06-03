@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzh.mapper.GoodsInfoMapper">
+    <!--查-->
+    <select id="getAllGoodsInfo" resultType="com.dzh.pojo.GoodsInfo">
+      select * from t_goods
+    </select>
+
+    <!--模糊查-->
+    <select id="getGoodsInfoBy" parameterType="com.dzh.vo.SelectComditionVo" resultType="com.dzh.pojo.GoodsInfo">
+        select * from t_goods
+        <where>
+            <if test="goodsName!=null and goodsName!=''">
+                goodsName like "%"#{goodsName}"%"
+            </if>
+            <if test="status!=null and status!=''">
+                and status=#{status}
+            </if>
+            <if test="price1!=null and price1!='' and price2!=null and price2!=''">
+                and price between #{price1} and #{price2}
+            </if>
+        </where>
+    </select>
+
+    <!--删-->
+    <delete id="delGoodsInfoById" parameterType="int">
+        delete from t_goods where Id = #{id}
+    </delete>
+
+    <!--<update id="upDateUserInfoById" parameterType="com.dzh.pojo.UserInfo">-->
+        <!--update userinfo-->
+        <!--<set>-->
+            <!--<if test="userName!=null and userName != ''">-->
+                <!--username = #{userName},-->
+            <!--</if>-->
+            <!--<if test="password!=null and password != ''">-->
+                <!--password = #{password},-->
+            <!--</if>-->
+            <!--<if test="regEmail!=null and regEmail != ''">-->
+                <!--regEmail = #{regEmail},-->
+            <!--</if>-->
+            <!--<if test="mobile!=null and mobile != ''">-->
+                <!--mobile = #{mobile},-->
+            <!--</if>-->
+            <!--<if test="icon!=null and icon != ''">-->
+                <!--icon = #{icon},-->
+            <!--</if>-->
+        <!--</set>-->
+        <!--where userId = #{userId}-->
+    <!--</update>-->
+
+    <!--<select id="listAllUserInfo" resultType="com.dzh.pojo.UserInfo">-->
+      <!--select * from userinfo-->
+    <!--</select>-->
+
+    <!--<select id="getUserInfoById" resultType="com.dzh.pojo.UserInfo" parameterType="int">-->
+      <!--select * from userinfo where userid = #{username}-->
+    <!--</select>-->
+
+    <!--&lt;!&ndash;增&ndash;&gt;-->
+    <!--<insert id="insertUserInfo" parameterType="com.dzh.pojo.UserInfo">-->
+        <!--insert into userinfo value (default,#{userName},#{password},#{regEmail},#{mobile},#{icon})-->
+    <!--</insert>-->
+
+    <!--&lt;!&ndash;删&ndash;&gt;-->
+    <!--<delete id="delUserInfoById" parameterType="int">-->
+        <!--delete from userinfo where userid = #{userid}-->
+    <!--</delete>-->
+
+    <!--<select id="selectUserInfoBy" resultType="com.dzh.pojo.UserInfo" parameterType="String">-->
+       <!--SELECT * FROM userinfo WHERE username LIKE "%"#{comdition}"%" or regemail like "%"#{comdition}"%" or mobile like "%"#{comdition}"%"-->
+    <!--</select>-->
+
+    <!--&lt;!&ndash;P删除&ndash;&gt;-->
+    <!--<delete id="pDelUserInfoById" parameterType="com.dzh.dto.UserIdArrays">-->
+        <!--delete from userinfo-->
+        <!--<where>-->
+            <!--<foreach collection="list" item="userId" separator="or">-->
+                <!--userId=#{userId}-->
+            <!--</foreach>-->
+        <!--</where>-->
+    <!--</delete>-->
+</mapper>

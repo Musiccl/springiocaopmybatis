@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzh.mapper.UserInfoMapper">
+
+<!--<resultMap id="roleInfoVoMap" type="com.dzh.vo.RoleInfoVo">-->
+<!--<id column="roleid" property="roleId"></id>-->
+<!--<result column="rolename" property="roleName"></result>-->
+<!--<result column="shortname" property="shortName"></result>-->
+<!--<result column="flag" property="isSelected"></result>-->
+<!--</resultMap>-->
+
+<!--&lt;!&ndash;一对多&ndash;&gt;-->
+<!--<resultMap id="userInfoMap" type="com.dzh.pojo.UserInfo">-->
+<!--<id column="userid" property="userId"></id>-->
+<!--<result column="username" property="userName"></result>-->
+<!--<result column="password" property="password"></result>-->
+<!--<result column="regemail" property="regEmail"></result>-->
+<!--<result column="mobile" property="mobile"></result>-->
+<!--<result column="icon" property="icon"></result>-->
+<!--<collection property="roleInfoList" ofType="com.dzh.pojo.RoleInfo">-->
+<!--<id column="roleid" property="roleId"></id>-->
+<!--<result column="rolename" property="roleName"></result>-->
+<!--<result column="shortname" property="shortName"></result>-->
+<!--</collection>-->
+<!--</resultMap>-->
+
+
+<!--<resultMap id="fRoleInfoVo2" type="com.dzh.vo.RoleInfoVo2">-->
+<!--<id column="urid" property="uid"></id>-->
+<!--<id column="roleid" property="roleId"></id>-->
+<!--<id column="rolename" property="roleName"></id>-->
+<!--<id column="shortname" property="shortName"></id>-->
+<!--<collection property="userInfoList" ofType="com.dzh.pojo.UserInfo">-->
+<!--<result column="username" property="userName"></result>-->
+<!--</collection>-->
+<!--</resultMap>-->
+
+<!--查-->
+<select id="userLogin" resultType="com.dzh.pojo.UserInfo" parameterType="com.dzh.pojo.UserInfo">
+      select * from userinfo where username = #{userName} and password = #{password}
+    </select>
+
+<update id="upDateUserInfoById" parameterType="com.dzh.pojo.UserInfo">
+    update userinfo
+    <set>
+        <if test="userName!=null and userName != ''">
+            username = #{userName},
+        </if>
+        <if test="password!=null and password != ''">
+            password = #{password},
+        </if>
+        <if test="regEmail!=null and regEmail != ''">
+            regEmail = #{regEmail},
+        </if>
+        <if test="mobile!=null and mobile != ''">
+            mobile = #{mobile},
+        </if>
+        <if test="icon!=null and icon != ''">
+            icon = #{icon},
+        </if>
+    </set>
+    where userId = #{userId}
+</update>
+
+<select id="listAllUserInfo" resultType="com.dzh.pojo.UserInfo">
+      select * from userinfo
+    </select>
+
+<select id="getUserInfoById" resultType="com.dzh.pojo.UserInfo" parameterType="int">
+      select * from userinfo where userid = #{username}
+    </select>
+
+<!--增-->
+<insert id="insertUserInfo" parameterType="com.dzh.pojo.UserInfo">
+        insert into userinfo value (default,#{userName},#{password},#{regEmail},#{mobile},#{icon})
+    </insert>
+
+<!--删-->
+<delete id="delUserInfoById" parameterType="int">
+        delete from userinfo where userid = #{userid}
+    </delete>
+
+<select id="selectUserInfoBy" resultType="com.dzh.pojo.UserInfo" parameterType="String">
+       SELECT * FROM userinfo WHERE username LIKE "%"#{comdition}"%" or regemail like "%"#{comdition}"%" or mobile like "%"#{comdition}"%"
+    </select>
+
+<!--P删除-->
+<delete id="pDelUserInfoById" parameterType="com.dzh.dto.UserIdArrays">
+    delete from userinfo
+    <where>
+        <foreach collection="list" item="userId" separator="or">
+            userId=#{userId}
+        </foreach>
+    </where>
+</delete>
+
+    <select id="listRoleDtoByUserId" parameterType="int" resultType="com.dzh.dto.RoleDto">
+        select ISNULL(tb1.roleId) isnull,ri.* from (SELECT r.* from userinfo u,user_role ur,roleinfo r
+        where u.USERID = ur.USERID and ur.ROLEID = r.ROLEID
+        and u.USERID = #{userId}) tb1 RIGHT JOIN roleinfo ri on tb1.ROLEID = ri.ROLEID
+    </select>
+<!--&lt;!&ndash;改&ndash;&gt;-->
+<!--<update id="updateUser" parameterType="com.dzh.pojo.UserInfo">-->
+<!--update userinfo set  username=#{userName},password=#{password},regEmail=#{regEmail},mobile=#{mobile},icon=#{icon} where userid=#{userId}-->
+<!--</update>-->
+
+<!--&lt;!&ndash;删&ndash;&gt;-->
+<!--<update id="delUser" parameterType="int">-->
+<!--delete from userinfo where userid=#{userId}-->
+<!--</update>-->
+<!---->
+<!--<select id="listRoleByUserId" parameterType="int" resultMap="roleInfoVoMap">-->
+<!--SELECT r1.*, IFNULL(tb1.shortname,0) flag FROM (SELECT r.* FROM userinfo u,user_role ur,roleinfo r-->
+<!--WHERE u.USERID = ur.USERID AND ur.ROLEID = r.ROLEID-->
+<!--AND u.USERID = #{userid}) AS tb1 RIGHT JOIN roleinfo r1 ON r1.roleid = tb1.roleid-->
+<!--</select>-->
+
+<!--<select id="listUserInfoAndRoleInfo" resultMap="userInfoMap">-->
+<!--SELECT u.*,r.*-->
+<!--from userinfo u,user_role ur,roleinfo r-->
+<!--where u.USERID = ur.USERID-->
+<!--and r.ROLEID = ur.ROLEID-->
+<!--</select>-->
+
+<!--<select id="fRoleInfoVo2" resultMap="fRoleInfoVo2">-->
+<!--SELECT ur.`urid`,ri.*,ui.`username`-->
+<!--FROM `roleinfo` ri, `user_role` ur, `userinfo` ui-->
+<!--WHERE ri.`ROLEID` = ur.`ROLEID`-->
+<!--AND ui.`USERID` = ur.`USERID`-->
+<!--</select>-->
+</mapper>
